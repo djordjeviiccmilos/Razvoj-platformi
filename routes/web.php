@@ -1,20 +1,21 @@
 <?php
 
 use App\Http\Controllers\Admin\QuestionController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherQuestionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->middleware('testInProgress');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+->middleware(['auth', 'verified', 'testInProgress'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'testInProgress'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -37,6 +38,12 @@ Route::middleware(['auth', 'role:nastavnik'])->prefix('nastavnik')->group(functi
     Route::post('/questions', [TeacherQuestionController::class, 'store'])->name('teacher.questions.store');
     Route::get('/questions/{question}/edit', [TeacherQuestionController::class, 'edit'])->name('teacher.questions.edit');
     Route::put('/questions/{question}', [TeacherQuestionController::class, 'update'])->name('teacher.questions.update');
+});
+
+Route::middleware(['auth', 'role:student'])->prefix('student')->group(function () {
+    Route::get('/student/test/start', [StudentController::class, 'start'])->name('student.test.start');
+    Route::post('/student/test/submit', [StudentController::class, 'submit'])->name('student.test.submit');
+    Route::get('/test/results', [StudentController::class, 'results'])->name('student.test.results');
 });
 
 require __DIR__.'/auth.php';
