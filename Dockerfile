@@ -5,7 +5,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev libpq-dev libcurl4-openssl-dev \
     && docker-php-ext-install pdo pdo_mysql mbstring zip bcmath
 
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+# Instaliraj Node 20
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
 COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
