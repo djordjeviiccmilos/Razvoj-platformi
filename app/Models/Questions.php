@@ -20,6 +20,12 @@ class Questions extends Model
         'options' => 'array',
     ];
 
+    public function getShuffledOptions() {
+        $opts = $this->options ?? [];
+        shuffle($opts);
+        return $opts;
+    }
+
     public function user() {
         return $this->belongsTo(User::class, 'user_id');
     }

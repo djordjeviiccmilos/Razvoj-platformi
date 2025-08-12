@@ -35,6 +35,19 @@ class QuestionController extends Controller
             'correctAnswer' => 'nullable|string',
         ]);
 
+        if ($validated['type'] === 'multipleChoice') {
+            if (!in_array($validated['correctAnswer'], $validated['options'] ?? [])) {
+                return back()
+                    ->withErrors(['correctAnswer' => 'Tačan odgovor mora biti jedna od ponuđenih opcija.'])
+                    ->withInput();
+            }
+        }
+
+        $options = $validated['options'] ?? [];
+        if(count($options) !== count(array_unique($options))) {
+            return back()->withErrors(['options' => 'Više puta se javlja isti ponudjeni odgovor.'])->withInput();
+        }
+
         $question = new Questions();
         $question->user_id = auth()->id(); // nastavnik koji unosi pitanje
         $question->type = $validated['type'];
@@ -59,6 +72,19 @@ class QuestionController extends Controller
             'options' => 'nullable|array',
             'correctAnswer' => 'nullable|string',
         ]);
+
+        if ($validated['type'] === 'multipleChoice') {
+            if (!in_array($validated['correctAnswer'], $validated['options'] ?? [])) {
+                return back()
+                    ->withErrors(['correctAnswer' => 'Tačan odgovor mora biti jedna od ponuđenih opcija.'])
+                    ->withInput();
+            }
+        }
+
+        $options = $validated['options'] ?? [];
+        if(count($options) !== count(array_unique($options))) {
+            return back()->withErrors(['options' => 'Više puta se javlja isti ponudjeni odgovor.'])->withInput();
+        }
 
         $question->type = $validated['type'];
         $question->questionText = $validated['questionText'];

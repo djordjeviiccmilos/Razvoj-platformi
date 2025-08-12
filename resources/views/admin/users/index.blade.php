@@ -1,47 +1,56 @@
 <x-app-layout>
-    <div class="container">
-        <h2 class="h2 text-center mt-3 mb-3">Lista korisnika</h2>
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th scope="col"></th>
-                <th scope="col">Ime</th>
-                <th scope="col">Email</th>
-                <th scope="col">Rola</th>
-                <th scope="col">Promeni rolu u nastavnika</th>
-                <th scope="col">Ban</th>
-            </tr>
-            </thead>
-            <tbody>
+    <div class="container py-4">
+        <h2 class="text-center mb-4 h2">
+            <i class="fa-solid fa-users me-2 text-primary"></i>
+            Lista korisnika
+        </h2>
+
+        <div class="row g-4">
             @foreach($users as $user)
-                <tr>
-                    <th scope="row"></th>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>{{ $user->role }}</td>
-                    <td>
-                        @if ($user->role === 'student')
-                            <form action="{{ route('admin.users.promote', $user) }}" method="POST" style="display:inline-block;">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-sm btn-success">Dodeli rolu nastavnika</button>
-                            </form>
-                        @endif
-                    </td>
-                    <td>
-                        @if ($user->role !== 'admin')
-                            <form action="{{ route('admin.users.ban', $user) }}" method="POST" style="display:inline">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-sm {{ $user->banned ? 'btn-danger' : 'btn-success' }}">
-                                    {{ $user->banned ? 'Odbanuj' : 'Banuj' }}
-                                </button>
-                            </form>
-                        @endif
-                    </td>
-                </tr>
+                <div class="col-md-4 col-lg-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <i class="fa-solid fa-user fa-lg"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="mb-0">{{ $user->name }}</h5>
+                                    <small class="text-muted">{{ $user->email }}</small>
+                                </div>
+                            </div>
+
+                            <p class="mb-2">
+                                <i class="fa-solid fa-id-badge me-1 text-secondary"></i>
+                                <strong>Rola:</strong> {{ ucfirst($user->role) }}
+                            </p>
+
+                            <div class="mt-auto">
+                                @if ($user->role === 'student')
+                                    <form action="{{ route('admin.users.promote', $user) }}" method="POST" class="d-inline-block mb-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-sm btn-outline-primary w-100">
+                                            <i class="fa-solid fa-chalkboard-teacher me-1"></i> Dodeli rolu nastavnika
+                                        </button>
+                                    </form>
+                                @endif
+
+                                @if ($user->role !== 'admin')
+                                    <form action="{{ route('admin.users.ban', $user) }}" method="POST" class="d-inline-block w-100">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-sm w-100 {{ $user->banned ? 'btn-success' : 'btn-danger' }}">
+                                            <i class="fa-solid {{ $user->banned ? 'fa-unlock' : 'fa-ban' }} me-1"></i>
+                                            {{ $user->banned ? 'Odbanuj' : 'Banuj' }}
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
             @endforeach
-            </tbody>
-        </table>
+        </div>
     </div>
 </x-app-layout>

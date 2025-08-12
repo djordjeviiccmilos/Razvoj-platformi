@@ -1,46 +1,93 @@
 <x-app-layout>
-    <div class="container">
-        <form method="POST" action="{{ route('admin.questions.update', $question) }}">
-            @csrf
-            @method('PUT')
-
-            <div class="mb-3">
-                <label for="type" class="form-label">Tip pitanja</label>
-                <select name="type" id="type" class="form-select" required>
-                    <option value="multipleChoice" {{ $question->type === 'multipleChoice' ? 'selected' : '' }}>Višestruki izbor</option>
-                    <option value="open" {{ $question->type === 'open' ? 'selected' : '' }}>Otvoreni odgovor</option>
-                </select>
+    <div class="container mt-4">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header bg-primary text-white text-center rounded-top-4">
+                <h3 class="mb-0">
+                    <i class="fa-solid fa-pen-to-square me-2"></i> Izmena pitanja
+                </h3>
             </div>
 
-            <div class="mb-3">
-                <label for="questionText" class="form-label">Tekst pitanja</label>
-                <input type="text" name="questionText" id="questionText" class="form-control" value="{{ $question->questionText }}" required>
-            </div>
+            @if($errors->has('correctAnswer'))
+                <div class="alert alert-danger mt-2">
+                    {{ $errors->first('correctAnswer') }}
+                </div>
+            @endif
 
-            <div class="mb-3" id="multipleChoiceFields" style="{{ $question->type === 'multipleChoice' ? '' : 'display:none;' }}">
-                <label class="form-label">Opcije odgovora</label>
-                @php
-                    $options = json_decode($question->options, true) ?? [];
-                @endphp
-                @foreach($options as $index => $option)
-                    <input type="text" name="options[]" class="form-control mb-2" value="{{ $option }}" required>
-                @endforeach
+            <div class="card-body p-4">
+                <form action="{{ route('admin.questions.update', $question) }}" method="POST">
+                    @csrf
+                    @method('PUT')
 
-                <label class="form-label mt-3">Tačan odgovor</label>
-                <input type="text" name="correctAnswer" class="form-control" value="{{ $question->correctAnswer }}">
-            </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fa-solid fa-question-circle me-1 text-primary"></i> Tekst pitanja
+                        </label>
+                        <input type="text" name="questionText"
+                               class="form-control form-control-lg rounded-3 shadow-sm"
+                               value="{{ $question->questionText }}" required>
+                    </div>
 
-            <div class="mt-4">
-                <button type="submit" class="btn btn-success">Sačuvaj izmene</button>
-                <a href="{{ route('admin.questions.index') }}" class="btn btn-secondary">Nazad</a>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fa-solid fa-list-check me-1 text-primary"></i> Tip pitanja
+                        </label>
+                        <select name="type" class="form-select form-select-lg rounded-3 shadow-sm"
+                                id="questionType" required onchange="toggleOptions(this.value)">
+                            <option value="multipleChoice" {{ $question->type == 'multipleChoice' ? 'selected' : '' }}>
+                                Zaokruživanje
+                            </option>
+                            <option value="open" {{ $question->type == 'open' ? 'selected' : '' }}>
+                                Otvoreni odgovor
+                            </option>
+                        </select>
+                    </div>
+
+                    <div id="multipleChoiceOptions" class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fa-solid fa-square-check me-1 text-primary"></i> Opcije
+                        </label>
+                        @php
+                            $options = $question->options ?? [];
+
+                            if (is_string($options)) {
+                                $decoded = json_decode($options, true);
+                                $options = is_array($decoded) ? $decoded : [];
+                            } elseif (!is_array($options)) {
+                                $options = [];
+                            }
+                        @endphp
+                        @for ($i = 0; $i < 4; $i++)
+                            <input type="text" name="options[]"
+                                   class="form-control rounded-3 shadow-sm mb-2"
+                                   placeholder="Opcija {{ $i+1 }}"
+                                   value="{{ $options[$i] ?? '' }}">
+                        @endfor
+
+                        <label class="form-label fw-bold mt-3">
+                            <i class="fa-solid fa-check me-1 text-success"></i> Tačan odgovor
+                        </label>
+                        <input type="text" name="correctAnswer"
+                               class="form-control rounded-3 shadow-sm"
+                               value="{{ $question->correctAnswer }}">
+                    </div>
+
+                    <div class="text-end mt-4">
+                        <button type="submit" class="btn btn-success btn-lg rounded-3 shadow-sm px-4">
+                            <i class="fa-solid fa-save me-1"></i> Sačuvaj izmene
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 
     <script>
-        document.getElementById('type').addEventListener('change', function () {
-            const type = this.value;
-            document.getElementById('multipleChoiceFields').style.display = type === 'multipleChoice' ? 'block' : 'none';
-        });
+        function toggleOptions(type) {
+            document.getElementById('multipleChoiceOptions').style.display =
+                (type === 'multipleChoice') ? 'block' : 'none';
+        }
+        window.onload = function () {
+            toggleOptions(document.getElementById('questionType').value);
+        }
     </script>
 </x-app-layout>

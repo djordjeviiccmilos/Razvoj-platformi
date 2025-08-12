@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Admin',
             'email' => 'admin@pmf.rs',
-            'password' => bcrypt('admin123'), // šifra je "password"
+            'password' => bcrypt('admin123'),
             'role' => 'admin',
             'banned' => false,
         ]);

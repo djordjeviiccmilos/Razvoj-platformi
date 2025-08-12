@@ -8,33 +8,6 @@
                     <a href="{{ route('dashboard') }}">
                         <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-9 w-auto" />                    </a>
                 </div>
-
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    @auth
-                        @if (auth()->user()->role === 'admin')
-                            <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
-                                {{ __('Korisnici') }}
-                            </x-nav-link>
-                        @endif
-                    @endauth
-
-                    @auth
-                        @if (auth()->user()->role === 'admin')
-                            <x-nav-link :href="route('admin.questions.index')" :active="request()->routeIs('admin.questions.index')">
-                                {{ __('Pitanja') }}
-                            </x-nav-link>
-                        @endif
-                    @endauth
-
-                    @auth
-                        @if (auth()->user()->role === 'nastavnik')
-                            <x-nav-link :href="route('teacher.questions.index')" :active="request()->routeIs('teacher.questions.index')">
-                                {{ __('Pitanja') }}
-                            </x-nav-link>
-                        @endif
-                    @endauth
-                </div>
             </div>
 
             <!-- Settings Dropdown -->

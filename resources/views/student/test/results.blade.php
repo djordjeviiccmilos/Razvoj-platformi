@@ -6,10 +6,27 @@
     <div class="container">
         <h1 class="text-center mt-4 mb-4 h1">Rezultati testa</h1>
 
+        @if($score >= 30)
+            <div class="alert alert-success text-center">
+                <h2 class="text-center mt-4 mb-4 h1">
+                    <i class="fa-solid fa-face-smile-beam me-2"></i>
+                    Čestitamo! Položili ste test sa {{ $score }} poena.
+                </h2>
+            </div>
+        @else
+            <div class="alert alert-danger text-center">
+                <h2 class="text-center mt-4 mb-4 h1">
+                    <i class="fa-solid fa-circle-xmark me-2"></i>
+                    Nažalost, niste položili test. Vaš rezultat je {{ $score }} poena.
+                </h2>
+            </div>
+        @endif
+
         <div class="alert alert-info text-center">
+            <i class="fa-solid fa-chart-bar text-primary"></i>
             <strong>Osvojeno poena:</strong> {{ $score }} / <strong>60</strong>
             <br>
-            <strong>Procenat uspešnosti:</strong> {{ $score/60 }}%
+            <strong>Procenat uspešnosti:</strong> {{ number_format($score/60 * 100, 2)}}%
         </div>
 
         <table class="table table-bordered">

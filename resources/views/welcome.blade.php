@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Prijemni</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -20,15 +20,31 @@
             </style>
         @endif
     </head>
-    <body class="antialiased">
-    <div class="min-h-screen flex items-center justify-center bg-gray-100">
-        <div class="text-center">
-            <img src="{{ asset('images/logo.png') }}" class="mx-auto mb-4 w-24" alt="Logo">
-            <h1 class="text-4xl font-bold mb-4">Dobrodošli na platformu za pripremu prijemnog</h1>
-            <p class="mb-6">Prijavite se kako biste pristupili testovima. Želimo Vam srećan rad i puno uspeha!</p>
-            <a href="{{ route('login') }}" class="bg-blue-600 text-white px-4 py-2 rounded">Prijava</a>
-            <a href="{{ route('register') }}" class="bg-blue-600 text-white px-4 py-2 rounded">Registracija</a>
+    <body class="antialiased bg-gradient-to-br from-blue-100 via-white to-gray-100 min-h-screen flex items-center justify-center">
+    <div class="text-center bg-white p-8 rounded-lg shadow-lg max-w-md mx-4">
+        <img src="{{ asset('images/logo.png') }}" class="mx-auto mb-6 w-24" alt="Logo">
+
+        <h1 class="text-4xl font-bold mb-4 text-gray-800">Dobrodošli na platformu za pripremu prijemnog ispita!</h1>
+
+        <p class="mb-6 text-gray-600 max-w-xl mx-auto">
+            Prijavite se kako biste pristupili testovima. Želimo Vam srećan rad i puno uspeha!
+        </p>
+
+        <div class="flex justify-center gap-4 mb-6">
+            <a href="{{ route('login') }}"
+               class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow-md transition duration-300" style="width: 200px">
+                Prijava
+            </a>
+            <a href="{{ route('register') }}"
+               class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow-md transition duration-300" style="width: 200px">
+                Registracija
+            </a>
         </div>
+
+        <!-- Motivaciona poruka -->
+        <blockquote class="italic text-gray-500 mt-6">
+            "Znanje je jedino bogatstvo koje se udeljivanjem uvećava."
+        </blockquote>
     </div>
     </body>
 </html>

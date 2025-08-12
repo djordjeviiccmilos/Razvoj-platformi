@@ -21,7 +21,6 @@ class ImportQuestions extends Command
     public function handle()
     {
         $path = $this->argument('file');
-        $fullPath = base_path($path);
 
         if(!file_exists($path)) {
             $this->error('File not found');
@@ -67,7 +66,7 @@ class ImportQuestions extends Command
             Questions::create([
                 'type' => 'multipleChoice',
                 'questionText' => $data['pitanje'],
-                'options' => array_values($options),
+                'options' => json_encode(array_values($options)),
                 'correctAnswer' => $correctAnswer,
                 'user_id' => 1,
                 'banned' => false,
