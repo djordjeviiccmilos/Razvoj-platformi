@@ -54,7 +54,7 @@ class TeacherQuestionController extends Controller
 
         $question->save();
 
-        return redirect()->route('teacher.questions.index')->with('success', 'Pitanje je uspešno kreirano!');
+        return redirect()->route('teacher.questions.create')->with('success', 'Pitanje je uspešno kreirano!');
     }
 
     public function edit(Questions $question) {

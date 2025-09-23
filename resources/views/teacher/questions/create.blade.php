@@ -42,16 +42,16 @@
                             <i class="fa-solid fa-square-check me-1 text-success"></i> Opcije
                         </label>
                         <input type="text" name="options[]"
-                               class="form-control rounded-3 shadow-sm mb-2"
+                               class="form-control rounded-3 shadow-sm mb-2 option-input"
                                placeholder="Opcija 1" required>
                         <input type="text" name="options[]"
-                               class="form-control rounded-3 shadow-sm mb-2"
+                               class="form-control rounded-3 shadow-sm mb-2 option-input"
                                placeholder="Opcija 2" required>
                         <input type="text" name="options[]"
-                               class="form-control rounded-3 shadow-sm mb-2"
+                               class="form-control rounded-3 shadow-sm mb-2 option-input"
                                placeholder="Opcija 3" required>
                         <input type="text" name="options[]"
-                               class="form-control rounded-3 shadow-sm mb-2"
+                               class="form-control rounded-3 shadow-sm mb-2 option-input"
                                placeholder="Opcija 4" required>
 
                         <label class="form-label fw-bold mt-3">
@@ -74,12 +74,33 @@
 
     <script>
         function toggleOptions(type) {
-            document.getElementById('multipleChoiceOptions').style.display =
-                (type === 'multipleChoice') ? 'block' : 'none';
+            const optionsDiv = document.getElementById('multipleChoiceOptions');
+            const optionInputs = document.querySelectorAll('.option-input');
+            const correctAnswer = document.querySelector('input[name="correctAnswer"]');
+
+            if (type === 'multipleChoice') {
+                optionsDiv.style.display = 'block';
+                optionInputs.forEach(input => {
+                    input.removeAttribute('disabled');
+                    input.setAttribute('required', true);
+                });
+                correctAnswer.removeAttribute('disabled');
+            } else {
+                optionsDiv.style.display = 'none';
+                optionInputs.forEach(input => {
+                    input.removeAttribute('required');
+                    input.setAttribute('disabled', true); // <<<<< ključna stvar
+                    input.value = ''; // očisti vrednost
+                });
+                correctAnswer.setAttribute('disabled', true); // <<<<< ključna stvar
+                correctAnswer.value = '';
+            }
         }
-        window.onload = function () {
+
+        document.addEventListener("DOMContentLoaded", function() {
             toggleOptions(document.getElementById('questionType').value);
-        }
+        });
     </script>
+
 </x-app-layout>
 

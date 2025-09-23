@@ -41,8 +41,8 @@ class ImportQuestions extends Command
         $counter = 0;
 
         while(($row = fgetcsv($file)) !== false) {
-            if(count($row) !== count($header)) {
-                continue;
+            if(count($row) < count($header)) {
+                $row = array_pad($row, count($header), null);
             }
 
             $data = array_combine($header, $row);
@@ -60,18 +60,19 @@ class ImportQuestions extends Command
             $correctAns = strtolower($data['tacan_odgovor']);
             $correctAnswer = $data[$correctAns] ?? null;
 
-
             Questions::create([
                 'type' => 'multipleChoice',
                 'questionText' => $data['pitanje'],
-                'options' => json_encode(array_values($options)),
+                'options' => array_values($options),
                 'correctAnswer' => $correctAnswer,
                 'user_id' => 1,
                 'banned' => false,
             ]);
 
-            $this->info("Pitanja dodata!");
+            $counter++;
         }
+
+        $this->info("Ukupno ubaceno pitanja: $counter");
 
         fclose($file);
     }
