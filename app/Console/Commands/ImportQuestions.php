@@ -16,8 +16,6 @@ class ImportQuestions extends Command
      * Execute the console command.
      */
 
-
-
     public function handle()
     {
         $path = $this->argument('file');

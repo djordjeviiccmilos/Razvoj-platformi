@@ -31,7 +31,7 @@
 
                         @if($question->type === 'multipleChoice')
                             @php
-                                $options = $question->shuffled_options ?? $question->options;
+                                $options = $question->shuffled_options ?? json_decode($question->options, true);
                             @endphp
                             @foreach($options as $optionIndex => $option)
                                 <div class="form-check mb-2">
@@ -40,8 +40,7 @@
                                         type="radio"
                                         id="q{{ $question->id }}_option{{ $optionIndex }}"
                                         name="answers[{{ $question->id }}]"
-                                        value="{{ $option }}"
-                                        required>
+                                        value="{{ $option }}">
                                     <label class="form-check-label" for="q{{ $question->id }}_option{{ $optionIndex }}">
                                         {{ $option }}
                                     </label>
@@ -52,8 +51,7 @@
                                 name="answers[{{ $question->id }}]"
                                 class="form-control"
                                 rows="4"
-                                placeholder="Unesite odgovor ovde..."
-                                required></textarea>
+                                placeholder="Unesite odgovor ovde..."></textarea>
                         @endif
                     </div>
                 </div>
