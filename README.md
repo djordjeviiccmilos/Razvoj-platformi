@@ -22,8 +22,8 @@ Ova web aplikacija omogućava učenicima da vežbaju zadatke za prijemni ispit i
 
 1. Klonirajte repozitorijum:
    ```bash
-   git clone https://github.com/tvojusername/ime-projekta.git
-   cd ime-projekta 
+   git clone https://github.com/djordjeviiccmilos/Razvoj-platformi.git
+   cd razvoj-platformi
 2. Instalirajte composer.
    ```bash
    composer install
@@ -31,11 +31,11 @@ Ova web aplikacija omogućava učenicima da vežbaju zadatke za prijemni ispit i
 4. Pokrenite migracije i seeding baze:
    ```bash
    php artisan migrate --seed
-5. Pokrenite backend server:
-   ```bash
-   php artisan serve
-6. Proverite frontend:
+5. Proverite frontend:
    ```bash
    npm install
    npm start
-7. Aplikacija će biti dostupna na http://localhost:3000
+6. Pokrenite backend server:
+   ```bash
+   php artisan serve
+7. Aplikacija će biti dostupna na http://localhost:8000
