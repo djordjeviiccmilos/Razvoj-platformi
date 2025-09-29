@@ -43,13 +43,13 @@
             @foreach($stats as $index => $item)
                 <tr>
                     <td>{{ $index + 1 }}</td>
-                    <td>{{ $item['questionText'] }}</td>
-                    <td>{{ $item['studentAnswer'] }}</td>
+                    <td>{!! nl2br(e(str_replace('\$', '$', $item['questionText']))) !!}</td>
+                    <td>{!! str_replace('\$', '$', $item['studentAnswer']) !!}</td>
                     <td>
                         @if($item['type'] === 'multipleChoice')
-                            {{ $item['correctAnswer'] }}
+                            {!! nl2br(e(str_replace('\$', '$', $item['correctAnswer']))) !!}
                         @else
-                            <em>Odgovor je otvorenog tipa</em>
+                            {!! str_replace('\$', '$', $item['aiCorrectAnswer']) !!}
                         @endif
                     </td>
                     <td>{{ $item['points'] }}</td>

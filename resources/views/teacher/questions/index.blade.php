@@ -15,7 +15,7 @@
             @foreach($questions as $question)
                 <tr>
                     <td>{{ $question->type }}</td>
-                    <td class="max-w-xl">{{ $question->questionText }}</td>
+                    <td class="max-w-xl">{!! nl2br(e(str_replace('\$', '$', $question->questionText))) !!}</td>
                     <td class="max-w-xl">
                         @if($question->type === 'multipleChoice')
                             @php
@@ -33,9 +33,8 @@
                                     <li class="list-group-item"
                                         @if($option === $question->correctAnswer)
                                             style="font-weight: bold; color: green;"
-                                        @endif
-                                    >
-                                        {{ $option }}
+                                        @endif>
+                                        {!! nl2br(e(str_replace('\$', '$', $option))) !!}
                                     </li>
                                 @endforeach
                             </ul>

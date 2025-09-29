@@ -57,7 +57,7 @@ class QuestionController extends Controller
         $question->banned = false;
         $question->save();
 
-        return redirect()->route('admin.questions.index')->with('success', 'Pitanje uspešno dodato!');;
+        return redirect()->route('admin.questions.index')->with('success', 'Pitanje uspešno dodato!');
     }
 
     public function edit(Questions $question) {
@@ -79,17 +79,22 @@ class QuestionController extends Controller
                     ->withErrors(['correctAnswer' => 'Tačan odgovor mora biti jedna od ponuđenih opcija.'])
                     ->withInput();
             }
-        }
 
-        $options = $validated['options'] ?? [];
-        if(count($options) !== count(array_unique($options))) {
-            return back()->withErrors(['options' => 'Više puta se javlja isti ponudjeni odgovor.'])->withInput();
+            $options = $validated['options'] ?? [];
+            if(count($options) !== count(array_unique($options))) {
+                return back()->withErrors(['options' => 'Više puta se javlja isti ponudjeni odgovor.'])->withInput();
+            }
+
+            $question->options = $validated['options'];
+            $question->correctAnswer = $validated['correctAnswer'];
+        } else {
+            $question->options = null;
+            $question->correctAnswer = null;
         }
 
         $question->type = $validated['type'];
         $question->questionText = $validated['questionText'];
-        $question->options = $validated['type'] === 'multipleChoice' ? json_encode($validated['options']) : null;
-        $question->correctAnswer = $validated['type'] === 'multipleChoice' ? $validated['correctAnswer'] : null;
+        $question->banned = false;
         $question->save();
 
         return redirect()->route('admin.questions.index')->with('success', 'Pitanje uspešno izmenjeno!');

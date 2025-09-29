@@ -19,7 +19,7 @@
                 <tr>
                     <td>{{ $question->id }}</td>
                     <td class="text-capitalize">{{ $question->type }}</td>
-                    <td class="max-w-xl text-break">{{ $question->questionText }}</td>
+                    <td class="max-w-xl text-break">{!! nl2br(e(str_replace('\$', '$', $question->questionText))) !!}</td>
                     <td class="max-w-xl">
                         @if($question->type === 'multipleChoice')
                             @php
@@ -36,9 +36,8 @@
                                     <li class="list-group-item px-2 py-1"
                                         @if($option === $question->correctAnswer)
                                             style="font-weight: bold; color: green;"
-                                        @endif
-                                    >
-                                        {{ $option }}
+                                        @endif>
+                                        {!! nl2br(e(str_replace('\$', '$', $option))) !!}
                                     </li>
                                 @endforeach
                             </ul>

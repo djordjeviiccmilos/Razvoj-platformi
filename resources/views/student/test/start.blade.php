@@ -9,7 +9,15 @@
             <span class="text-success fw-semibold">Srećan rad, puno uspeha!</span>
         </p>
 
-        <form method="POST" action="{{ route('student.test.submit') }}">
+        <div id="timer"
+             style="position: fixed; top: 10px; right: 20px;
+            background: skyblue; padding: 10px 20px;
+            border-radius: 8px; font-size: 1.2rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 1000;">
+            60:00
+        </div>
+
+        <form id= "testForm" method="POST" action="{{ route('student.test.submit') }}">
             @csrf
 
             @foreach($questions as $index => $question)
@@ -27,7 +35,9 @@
                         @endif
                     </div>
                     <div class="card-body">
-                        <p class="card-text fs-5 mb-3">{{ $question->questionText }}</p>
+                        <p class="card-text fs-5 mb-3">
+                            {!! nl2br(e(str_replace('\$', '$', $question->questionText))) !!}
+                        </p>
 
                         @if($question->type === 'multipleChoice')
                             @php
@@ -42,7 +52,7 @@
                                         name="answers[{{ $question->id }}]"
                                         value="{{ $option }}">
                                     <label class="form-check-label" for="q{{ $question->id }}_option{{ $optionIndex }}">
-                                        {{ $option }}
+                                        {!! nl2br(e(str_replace('\$', '$', $option))) !!}
                                     </label>
                                 </div>
                             @endforeach
@@ -64,4 +74,43 @@
             </div>
         </form>
     </div>
+
+    <script>
+        let totalDuration = 60*60;
+        let display = document.getElementById('timer');
+
+        function startTimer(duration, display) {
+            let timer = duration;
+
+            let interval = setInterval(function () {
+                let minutes = Math.floor(timer / 60);
+                let seconds = timer % 60;
+
+                display.textContent = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    localStorage.removeItem('testStart');
+                    document.getElementById("testForm").submit();
+                }
+            }, 1000);
+        }
+
+        window.onload = function () {
+            let start = localStorage.getItem('testStart');
+
+            if(!start) {
+                start = Date.now();
+                localStorage.setItem('testStart', start);
+            } else {
+                start = parseInt(start);
+            }
+
+            let elapsed = Math.floor((Date.now() - start) / 1000);
+            let remaining = Math.max(totalDuration - elapsed, 0);
+
+            startTimer(remaining, display);
+        };
+    </script>
+
 </x-app-layout>

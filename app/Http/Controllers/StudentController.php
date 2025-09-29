@@ -69,7 +69,8 @@ class StudentController extends Controller
                 }
 
             } else {
-                $points = $this->AiEvaluate($question->questionText, $question->correctAnswer, $studentAnswer);
+                $points = $this->AiEvaluate($question->questionText, $studentAnswer);
+                $aiAnswer = $this->generateAnswer($question->questionText);
                 $score += $points;
                 $stats[] = [
                     'id' => $question->id,
@@ -77,6 +78,7 @@ class StudentController extends Controller
                     'studentAnswer' => $studentAnswer,
                     'type' => $question->type,
                     'points' => $points,
+                    'aiCorrectAnswer' => $aiAnswer,
                 ];
             }
         }
@@ -93,7 +95,7 @@ class StudentController extends Controller
         return view('student.test.results', compact('stats', 'score'));
     }
 
-    private function AiEvaluate($questionText, $correctAnswer, $studentAnswer) {
+    private function AiEvaluate($questionText, $studentAnswer) {
         if(!$studentAnswer) {
             return 0;
         }
@@ -107,9 +109,8 @@ class StudentController extends Controller
         $response = $client->chat()->create([
            'model' => 'gpt-4',
            'messages' => [
-               ['role' => 'system', 'content' => 'Student polaže probni prijemni iz informatike. Objektivno oceni ovaj odgovor od 0 do 5.'],
+               ['role' => 'system', 'content' => 'Objektivno oceni ovaj odgovor od 0 do 5.'],
                ['role' => 'user', 'content' => "Pitanje: $questionText \n
-                                                Tačan odgovor: $correctAnswer \n
                                                 Odgovor studenta: $studentAnswer \n
                                                 Koliko poena od 5? Vrati samo broj poena"]
 
@@ -118,7 +119,38 @@ class StudentController extends Controller
         ]);
 
         $points = (int) filter_var($response['choices'][0]['message']['content'], FILTER_SANITIZE_NUMBER_INT);
+        $points = max(0, min(5, $points));
 
         return $points;
+    }
+
+    private function generateAnswer($questionText) {
+        $guzzleClient = new GuzzleClient([
+            'verify' => false,
+        ]);
+
+        $client = OpenAI::factory()
+            ->withApiKey(env('OPENAI_API_KEY'))
+            ->withHttpClient($guzzleClient)
+            ->make();
+
+        $prompt = "Pitanje: $questionText\n" .
+            "Generiši kratak i jasan odgovor koji bi dobio maksimalnih 5 poena. Bez objasnjavanja, samo daj tacan odgovor.";
+
+        $response = $client->chat()->create([
+            'model' => 'gpt-4',
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => 'Ti si profesor informatike koji ocenjuje odgovore. Daj precizan, kratak i tačan odgovor.'
+                ],
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ]
+            ]
+        ]);
+
+        return $response['choices'][0]['message']['content'] ?? 'Odgovor nije dostupan';
     }
 }

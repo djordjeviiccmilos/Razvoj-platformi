@@ -87,11 +87,21 @@
 
     <script>
         function toggleOptions(type) {
-            document.getElementById('multipleChoiceOptions').style.display =
-                (type === 'multipleChoice') ? 'block' : 'none';
+            const container = document.getElementById('multipleChoiceOptions');
+            const inputs = container.querySelectorAll("input[name='options[]'], input[name='correctAnswer']");
+
+            if (type === 'multipleChoice') {
+                container.style.display = 'block';
+                inputs.forEach(input => input.setAttribute('required', 'required'));
+            } else {
+                container.style.display = 'none';
+                inputs.forEach(input => input.removeAttribute('required'));
+            }
         }
+
         window.onload = function () {
             toggleOptions(document.getElementById('questionType').value);
         }
     </script>
+
 </x-app-layout>

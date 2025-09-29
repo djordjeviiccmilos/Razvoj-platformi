@@ -83,22 +83,20 @@ class TeacherQuestionController extends Controller
                     ->withErrors(['correctAnswer' => 'Tačan odgovor mora biti jedna od ponuđenih opcija.'])
                     ->withInput();
             }
-        }
 
-        $options = $validated['options'] ?? [];
-        if(count($options) !== count(array_unique($options))) {
-            return back()->withErrors(['options' => 'Više puta se javlja isti ponudjeni odgovor.'])->withInput();
-        }
+            $options = $validated['options'] ?? [];
+            if(count($options) !== count(array_unique($options))) {
+                return back()->withErrors(['options' => 'Više puta se javlja isti ponudjeni odgovor.'])->withInput();
+            }
 
-        $question->type = $validated['type'];
-        $question->questionText = $validated['questionText'];
-        if($validated['type'] === 'multipleChoice') {
             $question->options = $validated['options'];
             $question->correctAnswer = $validated['correctAnswer'];
         } else {
             $question->options = null;
             $question->correctAnswer = null;
         }
+        $question->type = $validated['type'];
+        $question->questionText = $validated['questionText'];
         $question->banned = false;
         $question->save();
 
